@@ -1,4 +1,4 @@
 # DinoChrome
 A Chrome T-Rex game in Jetpack Compose
 
-`dev17`
+`1.0.0-alpha01`
