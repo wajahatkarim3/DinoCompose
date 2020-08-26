@@ -1,23 +1,26 @@
 package com.wajahatkarim3.dino.compose.model
 
 import android.graphics.Matrix
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.asAndroidPath
 import androidx.compose.ui.graphics.asComposePath
 import com.wajahatkarim3.dino.compose.CactusPath
+import com.wajahatkarim3.dino.compose.EARTH_SPEED
 import com.wajahatkarim3.dino.compose.EARTH_Y_POSITION
 import com.wajahatkarim3.dino.compose.deviceWidthInPixels
 
 data class CactusState(
     val cactusList: ArrayList<CactusModel> = ArrayList(),
-    val cactusSpeed: Int = 8
+    val cactusSpeed: Int = EARTH_SPEED
 ) {
     init {
         initCactus()
     }
 
-    private fun initCactus()
+    fun initCactus()
     {
+        cactusList.clear()
         var startX = deviceWidthInPixels + 150
         var cactusCount = 3
 
@@ -60,5 +63,15 @@ data class CactusModel(
         var androidPath = path.asAndroidPath()
         androidPath.transform(scaleMatrix)
         this.path = androidPath.asComposePath()
+    }
+
+    fun getBounds() : Rect
+    {
+        return Rect(
+            left = xPos.toFloat(),
+            top = yPos.toFloat() - path.getBounds().height,
+            right = xPos + path.getBounds().width,
+            bottom = yPos.toFloat()
+        )
     }
 }

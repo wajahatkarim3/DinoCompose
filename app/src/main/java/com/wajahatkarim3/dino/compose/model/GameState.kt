@@ -8,4 +8,11 @@ data class GameState(
     fun increaseScore() {
         currentScore = currentScore.inc()
     }
+
+    fun replay()
+    {
+        highScore = if (currentScore > highScore) currentScore else highScore
+        currentScore = 0
+        isGameOver = false
+    }
 }

@@ -51,11 +51,29 @@ fun DinoGameScene()
             earthState.moveForward()
             cactusState.moveForward()
             dinoState.move()
+
+            // Collision Check
+            cactusState.cactusList.forEach {
+                if (it.getBounds().overlaps(dinoState.getBounds()))
+                {
+                    gameState.isGameOver = true
+                    return@forEach
+                }
+            }
         }
     }
 
     Column(modifier = Modifier.fillMaxWidth().clickable(
-        onClick = { dinoState.jump() },
+        onClick = {
+            if (!gameState.isGameOver)
+                dinoState.jump()
+            else
+            {
+                cactusState.initCactus()
+                dinoState.init()
+                gameState.replay()
+            }
+        },
         indication = null)
     ) {
         val millis = state.value
@@ -81,7 +99,7 @@ fun DrawScope.DinoView(dinoState: DinoState) {
         scale(scaleX = dinoState.scale, scaleY = dinoState.scale, pivotY = 0f, pivotX = 0f)
     }) {
         drawPath(
-            path = DinoPath(),
+            path = dinoState.path,
             color = Color(0xFF000000),
             style = Fill
         )
@@ -174,21 +192,18 @@ fun HighScoreTextViews(gameState: GameState)
 @Composable
 fun GameOverTextView(isGameOver: Boolean = true)
 {
-    if (isGameOver)
-    {
-        Spacer(modifier = Modifier.padding(top = 20.dp))
-        Text(
-            text = "GAME OVER",
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center,
-            letterSpacing = 5.sp,
-            style = TextStyle(
-                color = Color.Black,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold
-            )
+    Spacer(modifier = Modifier.padding(top = 20.dp))
+    Text(
+        text = if (isGameOver) "GAME OVER" else "",
+        modifier = Modifier.fillMaxWidth(),
+        textAlign = TextAlign.Center,
+        letterSpacing = 5.sp,
+        style = TextStyle(
+            color = Color.Black,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.SemiBold
         )
-    }
+    )
 }
 
 @Composable

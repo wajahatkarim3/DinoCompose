@@ -1,5 +1,6 @@
 package com.wajahatkarim3.dino.compose.model
 
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Path
 import com.wajahatkarim3.dino.compose.DinoPath
 import com.wajahatkarim3.dino.compose.EARTH_Y_POSITION
@@ -14,6 +15,14 @@ data class DinoState(
     var path: Path = DinoPath()
 )
 {
+    fun init()
+    {
+        xPos = 60f
+        yPos = EARTH_Y_POSITION
+        velocityY = 0f
+        gravity = 0f
+    }
+
     fun move()
     {
         yPos += velocityY
@@ -34,5 +43,15 @@ data class DinoState(
             velocityY = -40f
             gravity = 3f
         }
+    }
+
+    fun getBounds() : Rect
+    {
+        return Rect(
+            left = xPos,
+            top = yPos - (path.getBounds().height * scale),
+            right = xPos + (path.getBounds().width * scale),
+            bottom = yPos
+        )
     }
 }
