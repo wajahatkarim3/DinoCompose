@@ -22,10 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.whenStarted
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
-import com.wajahatkarim3.dino.compose.model.CactusState
-import com.wajahatkarim3.dino.compose.model.CloudState
-import com.wajahatkarim3.dino.compose.model.DinoState
-import com.wajahatkarim3.dino.compose.model.EarthState
+import com.wajahatkarim3.dino.compose.model.*
 
 const val EARTH_Y_POSITION = 500f
 private const val EARTH_GROUND_STROKE_WIDTH = 10f
@@ -43,24 +40,30 @@ fun DinoGameScene()
     var earthState = remember { EarthState(maxBlocks = 2, speed = EARTH_SPEED) }
     var cactusState = remember { CactusState(cactusSpeed = EARTH_SPEED) }
     var dinoState = remember { DinoState() }
+    var gameState = remember { GameState() }
     
     val state = animationTimeMillis {
-        // Game Loop
-        cloudsState.moveForward()
-        earthState.moveForward()
-        cactusState.moveForward()
-        dinoState.move()
+        if (!gameState.isGameOver)
+        {
+            // Game Loop
+            gameState.increaseScore()
+            cloudsState.moveForward()
+            earthState.moveForward()
+            cactusState.moveForward()
+            dinoState.move()
+        }
     }
 
     Column(modifier = Modifier.fillMaxWidth().clickable(
         onClick = { dinoState.jump() },
         indication = null)
     ) {
-        HighScoreTextViews()
-        GameOverTextView(isGameOver = false)
+        val millis = state.value
+
+        HighScoreTextViews(gameState)
+        GameOverTextView(gameState.isGameOver)
 
         Canvas(modifier = Modifier.weight(1f)) {
-            val millis = state.value
             EarthView(earthState)
             CloudsView(cloudsState)
             CactusView(cactusState)
@@ -70,34 +73,37 @@ fun DinoGameScene()
 }
 
 fun DrawScope.DinoView(dinoState: DinoState) {
-    translate(
-        left = dinoState.xPos,
-        top = dinoState.yPos - (dinoState.path.getBounds().height * dinoState.scale)
-    ) {
-        scale(scaleX = dinoState.scale, scaleY = dinoState.scale, pivotY = 0f, pivotX = 0f) {
-            drawPath(
-                path = DinoPath(),
-                color = Color(0xFF000000),
-                style = Fill
-            )
-        }
+    withTransform({
+        translate(
+            left = dinoState.xPos,
+            top = dinoState.yPos - (dinoState.path.getBounds().height * dinoState.scale)
+        )
+        scale(scaleX = dinoState.scale, scaleY = dinoState.scale, pivotY = 0f, pivotX = 0f)
+    }) {
+        drawPath(
+            path = DinoPath(),
+            color = Color(0xFF000000),
+            style = Fill
+        )
     }
 }
 
 fun DrawScope.CloudsView(cloudState: CloudState)
 {
     cloudState.cloudsList.forEach {cloud ->
-        translate(
-            left = cloud.xPos.toFloat(),
-            top = cloud.yPos.toFloat()
-        ) {
-            scale(scaleX = 4f, scaleY = 4f, pivotX = 0f, pivotY = 0f) {
-                drawPath(
-                    path = CloudPath(),
-                    color = Color(0xFFC5C5C5),
-                    style = Stroke(2f)
-                )
-            }
+        withTransform({
+            translate(
+                left = cloud.xPos.toFloat(),
+                top = cloud.yPos.toFloat()
+            )
+            scale(scaleX = 4f, scaleY = 4f, pivotX = 0f, pivotY = 0f)
+        })
+        {
+            drawPath(
+                path = CloudPath(),
+                color = Color(0xFFC5C5C5),
+                style = Stroke(2f)
+            )
         }
     }
 }
@@ -133,11 +139,13 @@ fun DrawScope.EarthView(earthState: EarthState)
 fun DrawScope.CactusView(cactusState: CactusState)
 {
     cactusState.cactusList.forEach { cactus ->
-
-        translate(
-            left = cactus.xPos.toFloat(),
-            top = cactus.yPos.toFloat() - cactus.path.getBounds().height
-        ) {
+        withTransform({
+            translate(
+                left = cactus.xPos.toFloat(),
+                top = cactus.yPos.toFloat() - cactus.path.getBounds().height
+            )
+        })
+        {
             drawPath(
                 path = cactus.path,
                 color = Color(0xFF000000),
@@ -148,7 +156,7 @@ fun DrawScope.CactusView(cactusState: CactusState)
 }
 
 @Composable
-fun HighScoreTextViews()
+fun HighScoreTextViews(gameState: GameState)
 {
     Spacer(modifier = Modifier.padding(top = 50.dp))
     Row(
@@ -157,9 +165,9 @@ fun HighScoreTextViews()
     ) {
         Text(text = "HI")
         Spacer(modifier = Modifier.padding(start = 10.dp))
-        Text(text = "00000")
+        Text(text = "${gameState.highScore}".padStart(5, '0'))
         Spacer(modifier = Modifier.padding(start = 10.dp))
-        Text(text = "00000")
+        Text(text = "${gameState.currentScore}".padStart(5, '0'))
     }
 }
 
