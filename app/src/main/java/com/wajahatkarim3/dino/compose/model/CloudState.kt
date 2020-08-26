@@ -1,6 +1,7 @@
 package com.wajahatkarim3.dino.compose.model
 
 import com.wajahatkarim3.dino.compose.deviceWidthInPixels
+import kotlin.random.Random
 
 data class CloudState(
     val cloudsList: ArrayList<CloudModel> = arrayListOf<CloudModel>(),
@@ -51,5 +52,5 @@ fun rand(start: Int, end: Int): Int {
 
 fun rand(start: Float, end: Float): Float {
     require(start <= end) { "Illegal Argument" }
-    return (Math.random() * (end - start + 1)).toFloat() + start
+    return Random(seed = System.currentTimeMillis()).nextFloat() * (end - start) + start
 }

@@ -10,6 +10,7 @@ data class DinoState(
     var yPos: Float = EARTH_Y_POSITION,
     var velocityY: Float = 0f,
     var gravity: Float = 0f,
+    var scale: Float = 0.4f,
     var path: Path = DinoPath()
 )
 {

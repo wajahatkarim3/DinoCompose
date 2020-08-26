@@ -72,9 +72,9 @@ fun DinoGameScene()
 fun DrawScope.DinoView(dinoState: DinoState) {
     translate(
         left = dinoState.xPos,
-        top = dinoState.yPos - (dinoState.path.getBounds().height * 0.5f)
+        top = dinoState.yPos - (dinoState.path.getBounds().height * dinoState.scale)
     ) {
-        scale(scaleX = 0.5f, scaleY = 0.5f, pivotY = 0f, pivotX = 0f) {
+        scale(scaleX = dinoState.scale, scaleY = dinoState.scale, pivotY = 0f, pivotX = 0f) {
             drawPath(
                 path = DinoPath(),
                 color = Color(0xFF000000),

@@ -24,7 +24,7 @@ data class CactusState(
         for (i in 0 until cactusCount) {
             var cactus = CactusModel(
                 count = rand(1, 3),
-                scale = rand(0.75f, 1f),
+                scale = rand(0.85f, 1.2f),
                 xPos = startX,
                 yPos = EARTH_Y_POSITION.toInt() + rand(20, 30)
             )
@@ -56,7 +56,7 @@ data class CactusModel(
     init {
         var path = CactusPath()
         var scaleMatrix = Matrix()
-        scaleMatrix.setScale(scale * 0.20f, scale * 0.20f)
+        scaleMatrix.setScale(scale * 0.25f, scale * 0.25f)
         var androidPath = path.asAndroidPath()
         androidPath.transform(scaleMatrix)
         this.path = androidPath.asComposePath()
