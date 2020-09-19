@@ -2,6 +2,7 @@ package com.wajahatkarim3.dino.compose.model
 
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Path
+import com.wajahatkarim3.dino.compose.DOUBT_FACTOR
 import com.wajahatkarim3.dino.compose.DinoPath
 import com.wajahatkarim3.dino.compose.EARTH_Y_POSITION
 import com.wajahatkarim3.dino.compose.deviceWidthInPixels
@@ -49,8 +50,8 @@ data class DinoState(
     {
         return Rect(
             left = xPos,
-            top = yPos - (path.getBounds().height * scale),
-            right = xPos + (path.getBounds().width * scale),
+            top = yPos - path.getBounds().height,
+            right = xPos + path.getBounds().width,
             bottom = yPos
         )
     }

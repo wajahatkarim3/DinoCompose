@@ -2,19 +2,24 @@ package com.wajahatkarim3.dino.compose
 
 import android.content.res.Resources
 import android.graphics.DashPathEffect
+import android.util.Log
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Switch
 import androidx.compose.runtime.*
 import androidx.compose.runtime.State
 import androidx.compose.runtime.dispatch.withFrameMillis
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.*
 import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.platform.LifecycleOwnerAmbient
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -32,6 +37,8 @@ const val EARTH_OFFSET = 200
 const val EARTH_SPEED = 10
 
 var deviceWidthInPixels = 1920
+
+var showBounds = mutableStateOf(true)
 
 @Composable
 fun DinoGameScene()
@@ -54,7 +61,7 @@ fun DinoGameScene()
 
             // Collision Check
             cactusState.cactusList.forEach {
-                if (it.getBounds().overlaps(dinoState.getBounds()))
+                if (dinoState.getBounds().deflate(DOUBT_FACTOR).overlaps(it.getBounds().deflate(DOUBT_FACTOR)))
                 {
                     gameState.isGameOver = true
                     return@forEach
@@ -78,14 +85,15 @@ fun DinoGameScene()
     ) {
         val millis = state.value
 
+        ShowBoundsSwitchView()
         HighScoreTextViews(gameState)
         GameOverTextView(gameState.isGameOver)
 
         Canvas(modifier = Modifier.weight(1f)) {
             EarthView(earthState)
             CloudsView(cloudsState)
-            CactusView(cactusState)
             DinoView(dinoState)
+            CactusView(cactusState)
         }
     }
 }
@@ -94,15 +102,15 @@ fun DrawScope.DinoView(dinoState: DinoState) {
     withTransform({
         translate(
             left = dinoState.xPos,
-            top = dinoState.yPos - (dinoState.path.getBounds().height * dinoState.scale)
+            top = dinoState.yPos - dinoState.path.getBounds().height
         )
-        scale(scaleX = dinoState.scale, scaleY = dinoState.scale, pivotY = 0f, pivotX = 0f)
     }) {
         drawPath(
             path = dinoState.path,
             color = Color(0xFF000000),
             style = Fill
         )
+        drawBoundingBox(color = Color.Green, rect = dinoState.path.getBounds())
     }
 }
 
@@ -114,14 +122,14 @@ fun DrawScope.CloudsView(cloudState: CloudState)
                 left = cloud.xPos.toFloat(),
                 top = cloud.yPos.toFloat()
             )
-            scale(scaleX = 4f, scaleY = 4f, pivotX = 0f, pivotY = 0f)
         })
         {
             drawPath(
-                path = CloudPath(),
+                path = cloud.path,
                 color = Color(0xFFC5C5C5),
                 style = Stroke(2f)
             )
+            drawBoundingBox(color = Color.Blue, rect = cloud.path.getBounds())
         }
     }
 }
@@ -169,6 +177,7 @@ fun DrawScope.CactusView(cactusState: CactusState)
                 color = Color(0xFF000000),
                 style = Fill
             )
+            drawBoundingBox(color = Color.Red, rect = cactus.path.getBounds())
         }
     }
 }
@@ -190,6 +199,22 @@ fun HighScoreTextViews(gameState: GameState)
 }
 
 @Composable
+fun ShowBoundsSwitchView()
+{
+    Spacer(modifier = Modifier.padding(top = 20.dp))
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(end = 20.dp),
+        horizontalArrangement = Arrangement.End
+    ) {
+        Text(text = "Show Bounds")
+        Spacer(modifier = Modifier.padding(start = 10.dp))
+        Switch(checked = showBounds.value, onCheckedChange = {
+            showBounds.value = it
+        })
+    }
+}
+
+@Composable
 fun GameOverTextView(isGameOver: Boolean = true)
 {
     Spacer(modifier = Modifier.padding(top = 20.dp))
@@ -204,6 +229,27 @@ fun GameOverTextView(isGameOver: Boolean = true)
             fontWeight = FontWeight.SemiBold
         )
     )
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(top = 10.dp),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        if (isGameOver) {
+            Image(
+                asset = vectorResource(id = R.drawable.ic_replay),
+                modifier = Modifier.preferredSize(40.dp)
+            )
+        }
+    }
+}
+
+
+fun DrawScope.drawBoundingBox(color: Color, rect: Rect, name: String? = null) {
+    name?.let { Log.w("drawBounds", "$name $rect") }
+    if (showBounds.value)
+    {
+        drawRect(color, rect.topLeft, rect.size, style = Stroke(3f))
+        drawRect(color, rect.deflate(DOUBT_FACTOR).topLeft, rect.deflate(DOUBT_FACTOR).size, style = Stroke(width = 3f, pathEffect = DashPathEffect(floatArrayOf(2f, 4f), 0f)))
+    }
 }
 
 @Composable
@@ -223,4 +269,15 @@ fun animationTimeMillis(gameloopCallback: () -> Unit): State<Long>
         }
     }
     return millisState
+}
+
+fun Rect.collided(other: Rect, doubtFactor: Float = 0f): Boolean
+{
+    if (right >= (other.left + doubtFactor) && right <= (other.right - doubtFactor))
+        return true
+//    if (right <= other.left || other.right <= left)
+//        return false
+//    if (bottom <= other.top || other.bottom <= top)
+//        return false
+    return false
 }
