@@ -1,5 +1,7 @@
 package com.wajahatkarim3.dino.compose.model
 
+import androidx.compose.ui.graphics.Path
+import com.wajahatkarim3.dino.compose.CloudPath
 import com.wajahatkarim3.dino.compose.deviceWidthInPixels
 import kotlin.random.Random
 
@@ -42,7 +44,8 @@ data class CloudState(
 
 data class CloudModel(
     var xPos: Int = 0,
-    var yPos: Int = 0
+    var yPos: Int = 0,
+    var path: Path = CloudPath()
 )
 
 fun rand(start: Int, end: Int): Int {
