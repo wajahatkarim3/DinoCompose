@@ -21,6 +21,7 @@ class MainActivity : AppCompatActivity() {
         var deviceMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(deviceMetrics)
         deviceWidthInPixels = deviceMetrics.widthPixels
+        distanceBetweenCactus = (deviceWidthInPixels * 0.4f).toInt()
 
         setContent {
             MaterialTheme {
