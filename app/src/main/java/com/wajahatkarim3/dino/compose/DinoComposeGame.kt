@@ -3,15 +3,14 @@ package com.wajahatkarim3.dino.compose
 import android.content.res.Resources
 import android.graphics.DashPathEffect
 import android.util.Log
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.Text
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.ColumnScope.weight
 import androidx.compose.material.Switch
 import androidx.compose.runtime.*
 import androidx.compose.runtime.State
 import androidx.compose.runtime.dispatch.withFrameMillis
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
@@ -71,31 +70,32 @@ fun DinoGameScene()
         }
     }
 
-    Column(modifier = Modifier.fillMaxWidth().clickable(
-        onClick = {
-            if (!gameState.isGameOver)
-                dinoState.jump()
-            else
-            {
-                cactusState.initCactus()
-                dinoState.init()
-                gameState.replay()
+    val millis = state.value
+
+    Stack {
+        Column(modifier = Modifier.fillMaxWidth().clickable(
+            onClick = {
+                if (!gameState.isGameOver)
+                    dinoState.jump()
+                else
+                {
+                    cactusState.initCactus()
+                    dinoState.init()
+                    gameState.replay()
+                }
+            },
+            indication = null)
+        ) {
+            ShowBoundsSwitchView()
+            HighScoreTextViews(gameState)
+            Canvas(modifier = Modifier.weight(1f)) {
+                EarthView(earthState)
+                CloudsView(cloudsState)
+                DinoView(dinoState)
+                CactusView(cactusState)
             }
-        },
-        indication = null)
-    ) {
-        val millis = state.value
-
-        ShowBoundsSwitchView()
-        HighScoreTextViews(gameState)
-        GameOverTextView(gameState.isGameOver)
-
-        Canvas(modifier = Modifier.weight(1f)) {
-            EarthView(earthState)
-            CloudsView(cloudsState)
-            DinoView(dinoState)
-            CactusView(cactusState)
         }
+        GameOverTextView(gameState.isGameOver, modifier = Modifier.align(Alignment.TopCenter).padding(top = 150.dp))
     }
 }
 
@@ -217,28 +217,24 @@ fun ShowBoundsSwitchView()
 }
 
 @Composable
-fun GameOverTextView(isGameOver: Boolean = true)
+fun GameOverTextView(isGameOver: Boolean = true, modifier: Modifier = Modifier)
 {
-    Spacer(modifier = Modifier.padding(top = 20.dp))
-    Text(
-        text = if (isGameOver) "GAME OVER" else "",
-        modifier = Modifier.fillMaxWidth(),
-        textAlign = TextAlign.Center,
-        letterSpacing = 5.sp,
-        style = TextStyle(
-            color = Color.Black,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.SemiBold
+    Column(modifier = modifier) {
+        Text(
+            text = if (isGameOver) "GAME OVER" else "",
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center,
+            letterSpacing = 5.sp,
+            style = TextStyle(
+                color = Color.Black,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.SemiBold
+            )
         )
-    )
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(top = 10.dp),
-        horizontalArrangement = Arrangement.Center
-    ) {
         if (isGameOver) {
             Image(
                 asset = vectorResource(id = R.drawable.ic_replay),
-                modifier = Modifier.preferredSize(40.dp)
+                modifier = Modifier.preferredSize(40.dp).padding(top = 10.dp).align(alignment = Alignment.CenterHorizontally)
             )
         }
     }
