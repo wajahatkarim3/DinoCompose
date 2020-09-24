@@ -106,6 +106,7 @@ fun DrawScope.DinoView(dinoState: DinoState) {
             top = dinoState.yPos - dinoState.path.getBounds().height
         )
     }) {
+        Log.w("Dino", "$dinoState.keyframe")
         drawPath(
             path = dinoState.path,
             color = Color(0xFF000000),

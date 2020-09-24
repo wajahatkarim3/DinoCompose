@@ -2,10 +2,7 @@ package com.wajahatkarim3.dino.compose.model
 
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Path
-import com.wajahatkarim3.dino.compose.DOUBT_FACTOR
-import com.wajahatkarim3.dino.compose.DinoPath
-import com.wajahatkarim3.dino.compose.EARTH_Y_POSITION
-import com.wajahatkarim3.dino.compose.deviceWidthInPixels
+import com.wajahatkarim3.dino.compose.*
 
 data class DinoState(
     var xPos: Float = 60f,
@@ -13,15 +10,27 @@ data class DinoState(
     var velocityY: Float = 0f,
     var gravity: Float = 0f,
     var scale: Float = 0.4f,
-    var path: Path = DinoPath()
+    var keyframe: Int = 0,
+    private var pathList: ArrayList<Path> = arrayListOf(),
+    var isJumping: Boolean = false
 )
 {
+    val path: Path
+        get() = if (keyframe <= 4) pathList[0] else pathList[1]
+
+    init {
+        // Adding all keyframes
+        pathList.add(DinoPath())
+        pathList.add(DinoPath2())
+    }
+
     fun init()
     {
         xPos = 60f
         yPos = EARTH_Y_POSITION
         velocityY = 0f
         gravity = 0f
+        isJumping = false
     }
 
     fun move()
@@ -34,6 +43,13 @@ data class DinoState(
             yPos = EARTH_Y_POSITION
             gravity = 0f
             velocityY = 0f
+            isJumping = false
+        }
+
+        if (!isJumping)
+        {
+            // Change keyframe only when dino is running and not jumping
+            changeKeyframe()
         }
     }
 
@@ -41,9 +57,17 @@ data class DinoState(
     {
         if (yPos == EARTH_Y_POSITION)
         {
+            isJumping = true
             velocityY = -40f
             gravity = 3f
         }
+    }
+
+    fun changeKeyframe()
+    {
+        keyframe++
+        if (keyframe == 8)
+            keyframe = 0
     }
 
     fun getBounds() : Rect
