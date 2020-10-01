@@ -1,7 +1,7 @@
 # DinoChrome
 A Chrome T-Rex game in Jetpack Compose
 
-<div align="center"><img src="https://github.com/wajahatkarim3/DinoCompose/blob/master/DinoDemo.gif"/></div>
+<div align="center"><img src="https://github.com/wajahatkarim3/DinoCompose/blob/master/DinoDemo.gif"/> <img src="https://github.com/wajahatkarim3/DinoCompose/blob/master/DinoDark.gif"/></div>
 
 <h1 align="center"><a href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fgithub.com%2Fwajahatkarim3%2FDinoCompose&via=%40WajahatKarim&text=Learn%20how%20to%20create%20Chrome%27s%20T-Rex%20dino%20game%20in%20%23JetpackCompose%20by%20@WajahatKarim%20on%20this%20repo.%20&hashtags=AndroidDev%2C%20Android%2C%20Kotlin">
         <img src="https://img.shields.io/twitter/url/http/shields.io.svg?style=social"/>
