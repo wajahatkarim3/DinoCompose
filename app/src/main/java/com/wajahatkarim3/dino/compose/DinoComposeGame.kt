@@ -3,6 +3,11 @@ package com.wajahatkarim3.dino.compose
 import android.content.res.Resources
 import android.graphics.DashPathEffect
 import android.util.Log
+import androidx.compose.animation.animatedFloat
+import androidx.compose.animation.core.AnimationConstants
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.repeatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.ColumnScope.weight
@@ -56,28 +61,37 @@ fun DinoGameScene()
     val dinoColor = MaterialTheme.colors.dinoColor
     val cactusColor = MaterialTheme.colors.cactusColor
 
-    val state = animationTimeMillis {
-        if (!gameState.isGameOver)
-        {
-            // Game Loop
-            gameState.increaseScore()
-            cloudsState.moveForward()
-            earthState.moveForward()
-            cactusState.moveForward()
-            dinoState.move()
+    val animatedProgress = animatedFloat(initVal = 0f)
+    onActive {
+        animatedProgress.animateTo(
+            targetValue = 1f,
+            anim = repeatable(
+                iterations = AnimationConstants.Infinite,
+                animation = tween(durationMillis = 1000, easing = LinearEasing)
+            )
+        )
+    }
 
-            // Collision Check
-            cactusState.cactusList.forEach {
-                if (dinoState.getBounds().deflate(DOUBT_FACTOR).overlaps(it.getBounds().deflate(DOUBT_FACTOR)))
-                {
-                    gameState.isGameOver = true
-                    return@forEach
-                }
+    val millis = animatedProgress.value
+
+    if (!gameState.isGameOver)
+    {
+        // Game Loop
+        gameState.increaseScore()
+        cloudsState.moveForward()
+        earthState.moveForward()
+        cactusState.moveForward()
+        dinoState.move()
+
+        // Collision Check
+        cactusState.cactusList.forEach {
+            if (dinoState.getBounds().deflate(DOUBT_FACTOR).overlaps(it.getBounds().deflate(DOUBT_FACTOR)))
+            {
+                gameState.isGameOver = true
+                return@forEach
             }
         }
     }
-
-    val millis = state.value
 
     Stack {
         Column(modifier = Modifier.fillMaxWidth().clickable(
@@ -255,25 +269,6 @@ fun DrawScope.drawBoundingBox(color: Color, rect: Rect, name: String? = null) {
         drawRect(color, rect.topLeft, rect.size, style = Stroke(3f))
         drawRect(color, rect.deflate(DOUBT_FACTOR).topLeft, rect.deflate(DOUBT_FACTOR).size, style = Stroke(width = 3f, pathEffect = DashPathEffect(floatArrayOf(2f, 4f), 0f)))
     }
-}
-
-@Composable
-fun animationTimeMillis(gameloopCallback: () -> Unit): State<Long>
-{
-    val millisState = remember { mutableStateOf(0L) }
-    val lifecycleOwner = LifecycleOwnerAmbient.current
-    launchInComposition {
-        val startTime = withFrameMillis { it }
-        lifecycleOwner.whenStarted {
-            while(true) {
-                withFrameMillis { frameTimeMillis: Long ->
-                    millisState.value = frameTimeMillis - startTime
-                }
-                gameloopCallback.invoke()
-            }
-        }
-    }
-    return millisState
 }
 
 fun Rect.collided(other: Rect, doubtFactor: Float = 0f): Boolean

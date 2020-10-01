@@ -36,16 +36,16 @@ val darkThemeColors = darkColors(
 )
 
 val Colors.earthColor: Color
-    get() = if (isLight) Color(0xFFDBDBDB) else Color(0xFFACACAC)
+    get() = if (isLight) Color(0xFF535353) else Color(0xFFACACAC)
 
 val Colors.cloudColor: Color
     get() = if (isLight) Color(0xFFDBDBDB) else Color(0xFFACACAC)
 
 val Colors.dinoColor: Color
-    get() = if (isLight) Color(0xFFDBDBDB) else Color(0xFFACACAC)
+    get() = if (isLight) Color(0xFF535353) else Color(0xFFACACAC)
 
 val Colors.cactusColor: Color
-    get() = if (isLight) Color(0xFFDBDBDB) else Color(0xFFACACAC)
+    get() = if (isLight) Color(0xFF535353) else Color(0xFFACACAC)
 
 val Colors.gameOverColor: Color
     get() = if (isLight) Color(0xFF000000) else Color(0xFFFFFFFF)
