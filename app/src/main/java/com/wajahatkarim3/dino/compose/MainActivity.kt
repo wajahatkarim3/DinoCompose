@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
@@ -24,7 +25,9 @@ class MainActivity : AppCompatActivity() {
         distanceBetweenCactus = (deviceWidthInPixels * 0.4f).toInt()
 
         setContent {
-            MaterialTheme {
+            MaterialTheme(
+                colors = if (isSystemInDarkTheme()) darkThemeColors else lightThemeColors
+            ) {
                 DinoGameScene()
             }
         }

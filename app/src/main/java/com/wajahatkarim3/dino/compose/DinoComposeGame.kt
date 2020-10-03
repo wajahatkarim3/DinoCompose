@@ -3,9 +3,16 @@ package com.wajahatkarim3.dino.compose
 import android.content.res.Resources
 import android.graphics.DashPathEffect
 import android.util.Log
+import androidx.compose.animation.animatedFloat
+import androidx.compose.animation.core.AnimationConstants
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.repeatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.ColumnScope.weight
+import androidx.compose.material.Colors
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Switch
 import androidx.compose.runtime.*
 import androidx.compose.runtime.State
@@ -48,29 +55,43 @@ fun DinoGameScene()
     var cactusState = remember { CactusState(cactusSpeed = EARTH_SPEED) }
     var dinoState = remember { DinoState() }
     var gameState = remember { GameState() }
-    
-    val state = animationTimeMillis {
-        if (!gameState.isGameOver)
-        {
-            // Game Loop
-            gameState.increaseScore()
-            cloudsState.moveForward()
-            earthState.moveForward()
-            cactusState.moveForward()
-            dinoState.move()
 
-            // Collision Check
-            cactusState.cactusList.forEach {
-                if (dinoState.getBounds().deflate(DOUBT_FACTOR).overlaps(it.getBounds().deflate(DOUBT_FACTOR)))
-                {
-                    gameState.isGameOver = true
-                    return@forEach
-                }
+    val earthColor = MaterialTheme.colors.earthColor
+    val cloudsColor = MaterialTheme.colors.cloudColor
+    val dinoColor = MaterialTheme.colors.dinoColor
+    val cactusColor = MaterialTheme.colors.cactusColor
+
+    val animatedProgress = animatedFloat(initVal = 0f)
+    onActive {
+        animatedProgress.animateTo(
+            targetValue = 1f,
+            anim = repeatable(
+                iterations = AnimationConstants.Infinite,
+                animation = tween(durationMillis = 1000, easing = LinearEasing)
+            )
+        )
+    }
+
+    val millis = animatedProgress.value
+
+    if (!gameState.isGameOver)
+    {
+        // Game Loop
+        gameState.increaseScore()
+        cloudsState.moveForward()
+        earthState.moveForward()
+        cactusState.moveForward()
+        dinoState.move()
+
+        // Collision Check
+        cactusState.cactusList.forEach {
+            if (dinoState.getBounds().deflate(DOUBT_FACTOR).overlaps(it.getBounds().deflate(DOUBT_FACTOR)))
+            {
+                gameState.isGameOver = true
+                return@forEach
             }
         }
     }
-
-    val millis = state.value
 
     Stack {
         Column(modifier = Modifier.fillMaxWidth().clickable(
@@ -89,17 +110,17 @@ fun DinoGameScene()
             ShowBoundsSwitchView()
             HighScoreTextViews(gameState)
             Canvas(modifier = Modifier.weight(1f)) {
-                EarthView(earthState)
-                CloudsView(cloudsState)
-                DinoView(dinoState)
-                CactusView(cactusState)
+                EarthView(earthState, color = earthColor)
+                CloudsView(cloudsState, color = cloudsColor)
+                DinoView(dinoState, color = dinoColor)
+                CactusView(cactusState, color = cactusColor)
             }
         }
         GameOverTextView(gameState.isGameOver, modifier = Modifier.align(Alignment.TopCenter).padding(top = 150.dp))
     }
 }
 
-fun DrawScope.DinoView(dinoState: DinoState) {
+fun DrawScope.DinoView(dinoState: DinoState, color: Color) {
     withTransform({
         translate(
             left = dinoState.xPos,
@@ -109,14 +130,14 @@ fun DrawScope.DinoView(dinoState: DinoState) {
         Log.w("Dino", "$dinoState.keyframe")
         drawPath(
             path = dinoState.path,
-            color = Color(0xFF000000),
+            color = color,
             style = Fill
         )
         drawBoundingBox(color = Color.Green, rect = dinoState.path.getBounds())
     }
 }
 
-fun DrawScope.CloudsView(cloudState: CloudState)
+fun DrawScope.CloudsView(cloudState: CloudState, color: Color)
 {
     cloudState.cloudsList.forEach {cloud ->
         withTransform({
@@ -128,7 +149,7 @@ fun DrawScope.CloudsView(cloudState: CloudState)
         {
             drawPath(
                 path = cloud.path,
-                color = Color(0xFFC5C5C5),
+                color = color,
                 style = Stroke(2f)
             )
             drawBoundingBox(color = Color.Blue, rect = cloud.path.getBounds())
@@ -136,11 +157,11 @@ fun DrawScope.CloudsView(cloudState: CloudState)
     }
 }
 
-fun DrawScope.EarthView(earthState: EarthState)
+fun DrawScope.EarthView(earthState: EarthState, color: Color)
 {
     // Ground Line
     drawLine(
-        color = Color.DarkGray,
+        color = color,
         start = Offset(x = 0f, y = EARTH_Y_POSITION),
         end = Offset(x = deviceWidthInPixels.toFloat(), y = EARTH_Y_POSITION),
         strokeWidth = EARTH_GROUND_STROKE_WIDTH
@@ -148,14 +169,14 @@ fun DrawScope.EarthView(earthState: EarthState)
 
     earthState.blocksList.forEach { block ->
         drawLine(
-            color = Color.DarkGray,
+            color = color,
             start = Offset(x = block.xPos, y = EARTH_Y_POSITION + 20),
             end = Offset(x = block.size, y = EARTH_Y_POSITION + 20),
             strokeWidth = EARTH_GROUND_STROKE_WIDTH / 5,
             pathEffect = DashPathEffect(floatArrayOf(20f, 40f), 0f)
         )
         drawLine(
-            color = Color.DarkGray,
+            color = color,
             start = Offset(x = block.xPos, y = EARTH_Y_POSITION + 30),
             end = Offset(x = block.size, y = EARTH_Y_POSITION + 30),
             strokeWidth = EARTH_GROUND_STROKE_WIDTH / 5,
@@ -164,7 +185,7 @@ fun DrawScope.EarthView(earthState: EarthState)
     }
 }
 
-fun DrawScope.CactusView(cactusState: CactusState)
+fun DrawScope.CactusView(cactusState: CactusState, color: Color)
 {
     cactusState.cactusList.forEach { cactus ->
         withTransform({
@@ -177,7 +198,7 @@ fun DrawScope.CactusView(cactusState: CactusState)
         {
             drawPath(
                 path = cactus.path,
-                color = Color(0xFF000000),
+                color = color,
                 style = Fill
             )
             drawBoundingBox(color = Color.Red, rect = cactus.path.getBounds())
@@ -193,11 +214,11 @@ fun HighScoreTextViews(gameState: GameState)
         modifier = Modifier.fillMaxWidth().padding(end = 20.dp),
         horizontalArrangement = Arrangement.End
     ) {
-        Text(text = "HI")
+        Text(text = "HI", style = TextStyle(color = MaterialTheme.colors.highScoreColor))
         Spacer(modifier = Modifier.padding(start = 10.dp))
-        Text(text = "${gameState.highScore}".padStart(5, '0'))
+        Text(text = "${gameState.highScore}".padStart(5, '0'), style = TextStyle(color = MaterialTheme.colors.highScoreColor))
         Spacer(modifier = Modifier.padding(start = 10.dp))
-        Text(text = "${gameState.currentScore}".padStart(5, '0'))
+        Text(text = "${gameState.currentScore}".padStart(5, '0'), style = TextStyle(color = MaterialTheme.colors.currentScoreColor))
     }
 }
 
@@ -227,7 +248,7 @@ fun GameOverTextView(isGameOver: Boolean = true, modifier: Modifier = Modifier)
             textAlign = TextAlign.Center,
             letterSpacing = 5.sp,
             style = TextStyle(
-                color = Color.Black,
+                color = MaterialTheme.colors.gameOverColor,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.SemiBold
             )
@@ -249,25 +270,6 @@ fun DrawScope.drawBoundingBox(color: Color, rect: Rect, name: String? = null) {
         drawRect(color, rect.topLeft, rect.size, style = Stroke(3f))
         drawRect(color, rect.deflate(DOUBT_FACTOR).topLeft, rect.deflate(DOUBT_FACTOR).size, style = Stroke(width = 3f, pathEffect = DashPathEffect(floatArrayOf(2f, 4f), 0f)))
     }
-}
-
-@Composable
-fun animationTimeMillis(gameloopCallback: () -> Unit): State<Long>
-{
-    val millisState = remember { mutableStateOf(0L) }
-    val lifecycleOwner = LifecycleOwnerAmbient.current
-    launchInComposition {
-        val startTime = withFrameMillis { it }
-        lifecycleOwner.whenStarted {
-            while(true) {
-                withFrameMillis { frameTimeMillis: Long ->
-                    millisState.value = frameTimeMillis - startTime
-                }
-                gameloopCallback.invoke()
-            }
-        }
-    }
-    return millisState
 }
 
 fun Rect.collided(other: Rect, doubtFactor: Float = 0f): Boolean
