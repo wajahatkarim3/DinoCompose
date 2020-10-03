@@ -47,7 +47,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.2.0'
 
     // Compose
-    implementation "androidx.compose:compose-compiler:$compose_version"
+    implementation "androidx.compose.compiler:compiler:$compose_version"
     implementation "androidx.compose.runtime:runtime:$compose_version"
     implementation "androidx.compose.foundation:foundation-layout:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"

@@ -16,7 +16,7 @@ data class DinoState(
 )
 {
     val path: Path
-        get() = if (keyframe <= 4) pathList[0] else pathList[1]
+        get() = if (keyframe <= 5) pathList[0] else pathList[1]
 
     init {
         // Adding all keyframes
@@ -66,7 +66,7 @@ data class DinoState(
     fun changeKeyframe()
     {
         keyframe++
-        if (keyframe == 8)
+        if (keyframe == 10)
             keyframe = 0
     }
 

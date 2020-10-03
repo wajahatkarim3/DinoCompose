@@ -2,6 +2,7 @@ package com.wajahatkarim3.dino.compose
 
 import android.content.res.Resources
 import android.graphics.DashPathEffect
+import android.media.Image
 import android.util.Log
 import androidx.compose.animation.animatedFloat
 import androidx.compose.animation.core.AnimationConstants
@@ -10,7 +11,6 @@ import androidx.compose.animation.core.repeatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.ColumnScope.weight
 import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Switch
@@ -22,9 +22,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageAsset
 import androidx.compose.ui.graphics.drawscope.*
 import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.platform.LifecycleOwnerAmbient
+import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.loadImageResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -45,7 +48,7 @@ const val EARTH_SPEED = 9
 var deviceWidthInPixels = 1920
 var distanceBetweenCactus = 100
 
-var showBounds = mutableStateOf(true)
+var showBounds = mutableStateOf(false)
 
 @Composable
 fun DinoGameScene()
@@ -148,10 +151,11 @@ fun DrawScope.CloudsView(cloudState: CloudState, color: Color)
         })
         {
             drawPath(
-                path = cloud.path,
+                path = cloudState.cloudsList.first().path,
                 color = color,
                 style = Stroke(2f)
             )
+
             drawBoundingBox(color = Color.Blue, rect = cloud.path.getBounds())
         }
     }
@@ -166,7 +170,6 @@ fun DrawScope.EarthView(earthState: EarthState, color: Color)
         end = Offset(x = deviceWidthInPixels.toFloat(), y = EARTH_Y_POSITION),
         strokeWidth = EARTH_GROUND_STROKE_WIDTH
     )
-
     earthState.blocksList.forEach { block ->
         drawLine(
             color = color,
@@ -197,7 +200,7 @@ fun DrawScope.CactusView(cactusState: CactusState, color: Color)
         })
         {
             drawPath(
-                path = cactus.path,
+                path = cactusState.cactusList.first().path,
                 color = color,
                 style = Fill
             )
