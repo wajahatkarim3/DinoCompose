@@ -58,6 +58,7 @@ A Chrome T-Rex game in Jetpack Compose
   
 ## 🔊 Talks
 * Kotlin Mumbai
+* Android Summit 2020
 
 ## 💰 Donations
 
