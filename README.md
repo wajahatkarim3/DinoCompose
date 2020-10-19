@@ -57,24 +57,15 @@ A Chrome T-Rex game in Jetpack Compose
 <br/>
   
 ## 🔊 Talks
-* Kotlin Mumbai
-* Android Summit 2020
+* Kotlin Mumbai - Monthly Meetup September 2020 - [Video](https://www.youtube.com/watch?v=O84m08d2CsI&t=5120s)
+* Android Summit 2020 - **Video Coming Soon**
+* GDG DevFest UK & Ireland 2020 - [Video](https://youtu.be/803jB3RLi_s?t=4587)
+* GDG DevFest Karachi 2020 - [Video](https://web.facebook.com/GDGKolachi/videos/837764360367165)
 
 ## 💰 Donations
 
 This project needs you! If you would like to support this project's further development, the creator of this project or the continuous maintenance of this project, feel free to donate. Your donation is highly appreciated (and I love food, coffee and beer). Thank you!
 
-**PayPal**
-
-* **[Donate $5](https://www.paypal.me/WajahatKarim/5)**: Thank's for creating this project, here's a tea (or some juice) for you!
-* **[Donate $10](https://www.paypal.me/WajahatKarim/10)**: Wow, I am stunned. Let me take you to the movies!
-* **[Donate $15](https://www.paypal.me/WajahatKarim/15)**: I really appreciate your work, let's grab some lunch!
-* **[Donate $25](https://www.paypal.me/WajahatKarim/25)**: That's some awesome stuff you did right there, dinner is on me!
-* **[Donate $50](https://www.paypal.me/WajahatKarim/50)**: I really really want to support this project, great job!
-* **[Donate $100](https://www.paypal.me/WajahatKarim/100)**: You are the man! This project saved me hours (if not days) of struggle and hard work, simply awesome!
-* **[Donate $2799](https://www.paypal.me/WajahatKarim/2799)**: Go buddy, buy Macbook Pro for yourself!
-
-Of course, you can also choose what you want to donate, all donations are awesome!
 ***
 
 ## 👨 Developed By
