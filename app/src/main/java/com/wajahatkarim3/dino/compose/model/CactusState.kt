@@ -1,13 +1,13 @@
 package com.wajahatkarim3.dino.compose.model
 
-import android.graphics.Matrix
 import android.util.Log
-import androidx.compose.runtime.stateFor
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.asAndroidPath
-import androidx.compose.ui.graphics.asComposePath
-import com.wajahatkarim3.dino.compose.*
+import com.wajahatkarim3.dino.compose.CactusPath
+import com.wajahatkarim3.dino.compose.EARTH_SPEED
+import com.wajahatkarim3.dino.compose.EARTH_Y_POSITION
+import com.wajahatkarim3.dino.compose.deviceWidthInPixels
+import com.wajahatkarim3.dino.compose.distanceBetweenCactus
 
 data class CactusState(
     val cactusList: ArrayList<CactusModel> = ArrayList(),
