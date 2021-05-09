@@ -189,13 +189,12 @@ fun DrawScope.CactusView(cactusState: CactusState, color: Color)
             scale(cactus.scale, cactus.scale)
             translate(
                 left = cactus.xPos.toFloat(),
-                // top = cactus.yPos.toFloat() - cactus.path.getBounds().height
-                top = cactus.path.getBounds().height
+                top = cactus.getBounds().top * cactus.scale
             )
         })
         {
             drawPath(
-                path = cactusState.cactusList.first().path,
+                path = cactus.path,
                 color = color,
                 style = Fill
             )
