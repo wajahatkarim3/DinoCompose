@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wajahatkarim3.dino.compose.model.*
+import com.washtechnologies.composeengine.R
 
 const val EARTH_Y_POSITION = 500f
 private const val EARTH_GROUND_STROKE_WIDTH = 10f
