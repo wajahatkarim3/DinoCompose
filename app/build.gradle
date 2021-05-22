@@ -31,7 +31,6 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerVersion "1.4.0"
         kotlinCompilerExtensionVersion compose_version
     }
 }
