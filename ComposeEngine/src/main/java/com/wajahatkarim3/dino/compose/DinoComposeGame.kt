@@ -34,24 +34,31 @@ private const val MAX_CLOUDS = 3
 const val EARTH_OFFSET = 200
 const val EARTH_SPEED = 9
 
-var deviceWidthInPixels = 1920
-var distanceBetweenCactus = 100
-
 var showBounds = mutableStateOf(false)
 
 @Preview
 @Composable
 fun DinoGameScenePreview() {
     MaterialTheme {
-        DinoGameScene(GameState())
+        DinoGameScene(GameState(), 1920)
     }
 }
 
 @Composable
-fun DinoGameScene(gameState: GameState) {
-    val cloudsState by remember { mutableStateOf(CloudState(maxClouds = MAX_CLOUDS, speed = CLOUDS_SPEED)) }
-    val earthState by remember { mutableStateOf(EarthState(maxBlocks = 2, speed = EARTH_SPEED)) }
-    val cactusState by remember { mutableStateOf(CactusState(cactusSpeed = EARTH_SPEED)) }
+fun DinoGameScene(
+    gameState: GameState,
+    deviceWidthInPixels: Int
+) {
+    val cloudsState by remember { mutableStateOf(CloudState(deviceWidthInPixels, maxClouds = MAX_CLOUDS, speed = CLOUDS_SPEED)) }
+    val earthState by remember { mutableStateOf(EarthState(deviceWidthInPixels, maxBlocks = 2, speed = EARTH_SPEED)) }
+    val cactusState by remember {
+        mutableStateOf(
+            CactusState(
+                deviceWidthInPixels = deviceWidthInPixels,
+                cactusSpeed = EARTH_SPEED
+            )
+        )
+    }
     val dinoState by remember { mutableStateOf(DinoState()) }
     val currentScore by gameState.currentScore.observeAsState()
     val highScore by gameState.highScore.observeAsState()
@@ -103,7 +110,7 @@ fun DinoGameScene(gameState: GameState) {
         ShowBoundsSwitchView()
         HighScoreTextViews(requireNotNull(currentScore), requireNotNull(highScore))
         Canvas(modifier = Modifier.weight(1f)) {
-            EarthView(earthState, color = earthColor)
+            EarthView(earthState, color = earthColor, deviceWidthInPixels)
             CloudsView(cloudsState, color = cloudsColor)
             DinoView(dinoState, color = dinoColor)
             CactusView(cactusState, color = cactusColor)
@@ -156,7 +163,7 @@ fun DrawScope.CloudsView(cloudState: CloudState, color: Color)
     }
 }
 
-fun DrawScope.EarthView(earthState: EarthState, color: Color)
+fun DrawScope.EarthView(earthState: EarthState, color: Color, deviceWidthInPixels: Int)
 {
     // Ground Line
     drawLine(

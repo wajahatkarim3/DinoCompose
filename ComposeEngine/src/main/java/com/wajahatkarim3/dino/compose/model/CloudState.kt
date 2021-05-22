@@ -2,11 +2,11 @@ package com.wajahatkarim3.dino.compose.model
 
 import androidx.compose.ui.graphics.Path
 import com.wajahatkarim3.dino.compose.CloudPath
-import com.wajahatkarim3.dino.compose.deviceWidthInPixels
 import kotlin.random.Random
 
 data class CloudState(
-    val cloudsList: ArrayList<CloudModel> = arrayListOf<CloudModel>(),
+    val deviceWidthInPixels: Int,
+    val cloudsList: ArrayList<CloudModel> = arrayListOf(),
     val maxClouds: Int = 3,
     val speed: Int = 1
 ) {

@@ -6,13 +6,15 @@ import androidx.compose.ui.graphics.Path
 import com.wajahatkarim3.dino.compose.CactusPath
 import com.wajahatkarim3.dino.compose.EARTH_SPEED
 import com.wajahatkarim3.dino.compose.EARTH_Y_POSITION
-import com.wajahatkarim3.dino.compose.deviceWidthInPixels
-import com.wajahatkarim3.dino.compose.distanceBetweenCactus
 
 data class CactusState(
+    val deviceWidthInPixels: Int,
     val cactusList: ArrayList<CactusModel> = ArrayList(),
-    val cactusSpeed: Int = EARTH_SPEED,
+    val cactusSpeed: Int = EARTH_SPEED
 ) {
+
+    private val distanceBetweenCactus = (deviceWidthInPixels * 0.4f).toInt()
+
     init {
         initCactus()
     }

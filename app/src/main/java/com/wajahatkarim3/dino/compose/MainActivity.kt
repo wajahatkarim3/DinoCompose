@@ -19,16 +19,18 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        var deviceMetrics = DisplayMetrics()
+        val deviceMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(deviceMetrics)
-        deviceWidthInPixels = deviceMetrics.widthPixels
-        distanceBetweenCactus = (deviceWidthInPixels * 0.4f).toInt()
+        val deviceWidthInPixels = deviceMetrics.widthPixels
 
         setContent {
             MaterialTheme(
                 colors = if (isSystemInDarkTheme()) darkThemeColors else lightThemeColors
             ) {
-                DinoGameScene(GameState())
+                DinoGameScene(
+                    GameState(),
+                    deviceWidthInPixels = deviceWidthInPixels
+                )
             }
         }
     }
