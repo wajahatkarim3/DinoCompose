@@ -25,6 +25,14 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
+      # Show permissions
+      - name: Set permisions
+        run: ls -la
+
+      # Runs the tests
+      - name: Set permisions
+        run: chmod 755 ./gradlew
+        
       # Runs the tests
       - name: Build the App
         run: ./gradlew test
