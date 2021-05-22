@@ -49,11 +49,11 @@ data class CloudModel(
 )
 
 fun rand(start: Int, end: Int): Int {
-    require(start <= end) { "Illegal Argument" }
+    require(start <= end) { "Illegal Argument start:$start is greater than $end" }
     return (Math.random() * (end - start + 1)).toInt() + start
 }
 
 fun rand(start: Float, end: Float): Float {
-    require(start <= end) { "Illegal Argument" }
+    require(start <= end) { "Illegal Argument start:$start is greater than $end" }
     return Random(seed = System.currentTimeMillis()).nextFloat() * (end - start) + start
 }
