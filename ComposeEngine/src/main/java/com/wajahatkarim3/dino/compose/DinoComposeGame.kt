@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Switch
@@ -40,14 +41,16 @@ var showBounds = mutableStateOf(false)
 @Composable
 fun DinoGameScenePreview() {
     MaterialTheme {
-        DinoGameScene(GameState(), 1920)
+        DinoGameScene(GameState(), 1920, false) {}
     }
 }
 
 @Composable
 fun DinoGameScene(
     gameState: GameState,
-    deviceWidthInPixels: Int
+    deviceWidthInPixels: Int,
+    isDebuggable: Boolean,
+    onFinished: () -> Unit
 ) {
     val cloudsState by remember { mutableStateOf(CloudState(deviceWidthInPixels, maxClouds = MAX_CLOUDS, speed = CLOUDS_SPEED)) }
     val earthState by remember { mutableStateOf(EarthState(deviceWidthInPixels, maxBlocks = 2, speed = EARTH_SPEED)) }
@@ -95,6 +98,7 @@ fun DinoGameScene(
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(bottom = 16.dp)
             .clickable(
                 onClick = {
                     if (!gameState.isGameOver)
@@ -107,13 +111,20 @@ fun DinoGameScene(
                 }
             )
     ) {
-        ShowBoundsSwitchView()
+        if(isDebuggable) {
+            ShowBoundsSwitchView()
+        }
         HighScoreTextViews(requireNotNull(currentScore), requireNotNull(highScore))
         Canvas(modifier = Modifier.weight(1f)) {
             EarthView(earthState, color = earthColor, deviceWidthInPixels)
             CloudsView(cloudsState, color = cloudsColor)
             DinoView(dinoState, color = dinoColor)
             CactusView(cactusState, color = cactusColor)
+        }
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+            Button(onClick = onFinished) {
+                Text("End Game")
+            }
         }
     }
     GameOverTextView(
